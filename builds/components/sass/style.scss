@@ -1,0 +1,49 @@
+/* style.scss */
+
+/* Compass imports */
+@import "compass";
+@import "compass/css3/box-shadow";
+
+/* Partials import */
+@import "variables";
+
+
+body {
+	background-color: $bg_color;
+	color: $text_color;
+	font-family: Verdana;
+	
+	#wrapper {
+		width: 100%;
+		
+			#content {
+				width: 600px;
+				margin: auto;
+			
+				p {
+					text-align: justify;
+					line-height: 1.5em;
+				}
+				
+				img {
+					display: block;
+					width: 70%;
+					margin: 0 auto;
+					margin-top: 20px;
+					margin-bottom: 30px;
+				}
+				
+				#{headings()} {
+					text-align: center;
+					font-weight: normal;
+				}
+			}
+
+	}
+}
+
+
+
+
+
+
