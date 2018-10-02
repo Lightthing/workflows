@@ -3,7 +3,8 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var coffee = require('gulp-coffee');
-var concat = require('gulp-concat'); 
+var concat = require('gulp-concat');
+var browserify = require('gulp-browserify');
 
 // Sources
 
@@ -25,5 +26,5 @@ gulp.task('coffee', function(){
 });
 
 gulp.task('js_concat', function(){
-	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(gulp.dest('builds/development/js'));
+	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(browserify()).pipe(gulp.dest('builds/development/js'));
 });
