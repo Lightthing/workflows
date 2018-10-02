@@ -43,10 +43,11 @@ gulp.task('compass', function(){
 
 gulp.task('all', ['coffee', 'js_concat', 'compass']);
 
-gulp.task('default', ['coffee', 'js_concat', 'compass']);
 
 gulp.task('watch', function(){
 	gulp.watch(coffeeSources, ['coffee', 'js_concat']);
 	gulp.watch(jsSources, ['js_concat']);
 	gulp.watch('builds/components/sass/*.scss', ['compass']);
 });
+
+gulp.task('default', ['coffee', 'js_concat', 'compass', 'watch']);
