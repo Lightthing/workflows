@@ -40,3 +40,7 @@ gulp.task('compass', function(){
 		style: 'expanded'
 	})).on('error', gutil.log).pipe(gulp.dest('builds/development/css'));
 });
+
+gulp.task('all', ['coffee', 'js_concat', 'compass']);
+
+gulp.task('default', ['coffee', 'js_concat', 'compass']);
