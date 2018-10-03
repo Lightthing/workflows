@@ -4,6 +4,6 @@ $ = require('jquery');
 
 (fill = function(item) {
   return $('#tagline').append(`${item}`);
-})('The most beautiful city in entire world');
+})('The most beautiful city in the World');
 
 fill;

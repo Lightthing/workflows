@@ -1,11 +1,12 @@
-// Link gulp libraries
+// Link gulp plugins (may be installed rirst through node.js npm)
 
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var coffee = require('gulp-coffee');
-var concat = require('gulp-concat');
-var browserify = require('gulp-browserify');
-var compass = require('gulp-compass');
+var gulp = require('gulp'); //core module for Gulp
+var gutil = require('gulp-util'); // Gulp utilities library, e.g. 'log' method
+var coffee = require('gulp-coffee'); // Processes CoffeeScript into JavaScript
+var concat = require('gulp-concat'); // assemble many of JS files into one
+var browserify = require('gulp-browserify'); // Mixes libraries (like JQuery) into script code files (needs Ruby to be installed)
+var compass = require('gulp-compass'); // Processes Sass into CSS (needs Ruby to be installed)
+var connect = require('gulp-connect'); // Creates HTTP server
 
 // Sources
 
@@ -30,7 +31,7 @@ gulp.task('coffee', function(){
 });
 
 gulp.task('js_concat', function(){
-	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(browserify()).pipe(gulp.dest('builds/development/js'));
+	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(browserify()).pipe(gulp.dest('builds/development/js')).pipe(connect.reload());
 });
 
 gulp.task('compass', function(){
@@ -38,16 +39,23 @@ gulp.task('compass', function(){
 		sass: 'builds/components/sass',
 		image: 'builds/development/images',
 		style: 'expanded'
-	})).on('error', gutil.log).pipe(gulp.dest('builds/development/css'));
+	})).on('error', gutil.log).pipe(gulp.dest('builds/development/css')).pipe(connect.reload());
 });
 
 gulp.task('all', ['coffee', 'js_concat', 'compass']);
 
 
 gulp.task('watch', function(){
-	gulp.watch(coffeeSources, ['coffee', 'js_concat']);
+	gulp.watch(coffeeSources, ['coffee']);
 	gulp.watch(jsSources, ['js_concat']);
 	gulp.watch('builds/components/sass/*.scss', ['compass']);
 });
 
-gulp.task('default', ['coffee', 'js_concat', 'compass', 'watch']);
+gulp.task('connect', function(){
+	connect.server({
+		root: 'builds/development',
+		livereload: true
+	});
+});
+
+gulp.task('default', ['coffee', 'js_concat', 'compass', 'connect', 'watch']);

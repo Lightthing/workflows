@@ -8,6 +8,6 @@ $('#content img').each(function(i,el){
 	$(this).bind('mouseout', function(){
 		$(this).animate({
 			"width" : "70%"
-		}, 900);
+		}, 500);
 	});
 });

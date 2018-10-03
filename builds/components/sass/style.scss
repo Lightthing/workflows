@@ -2,6 +2,7 @@
 
 /* Compass imports */
 @import "compass";
+@import "compass/reset";
 @import "compass/css3/box-shadow";
 
 /* Partials import */
@@ -17,7 +18,7 @@ body {
 		width: 100%;
 		
 			#content {
-				width: 600px;
+				width: 700px;
 				margin: auto;
 			
 				p {
@@ -31,6 +32,7 @@ body {
 					margin: 0 auto;
 					margin-top: 20px;
 					margin-bottom: 30px;
+					cursor: pointer;
 				}
 				
 				#{headings()} {
