@@ -13,6 +13,7 @@ var compass = require('gulp-compass'); // Processes Sass into CSS (needs Ruby to
 var minifyjs = require('gulp-js-minify'); //To minimize JS files
 var connect = require('gulp-connect'); // Creates HTTP server
 var gulpif = require('gulp-if'); // Allows usind advanced 'if' method
+var minifyHTML = require('gulp-minify-html'); //Minifies HTML
 
 
 
@@ -39,7 +40,7 @@ if(!production_mode){//Running Gulp in development mode
 // Sources
 
 htmlSources = [
-	outputDir + 'index.html'
+	'builds/development/*.html'
 ];
 
 coffeeSources = [
@@ -59,7 +60,7 @@ sassSources = [
 // Gulp tasks
 
 gulp.task('html_track', function(){
-	gulp.src(htmlSources).pipe(gulp.dest(outputDir)).pipe(connect.reload());
+	gulp.src(htmlSources).pipe(gulpif(production_mode, minifyHTML())).pipe(gulpif(production_mode, gulp.dest(outputDir))).pipe(connect.reload());
 });
 
 gulp.task('coffee', function(){
