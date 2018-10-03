@@ -1,5 +1,8 @@
-// Link gulp plugins (may be installed rirst through node.js npm)
+//Switching between development and production modes
+var production_mode = 1;
 
+
+// Linking gulp plugins (may be installed rirst through node.js npm)
 
 var gulp = require('gulp'); //core module for Gulp
 var gutil = require('gulp-util'); // Gulp utilities library, e.g. 'log' method
@@ -7,7 +10,10 @@ var coffee = require('gulp-coffee'); // Processes CoffeeScript into JavaScript
 var concat = require('gulp-concat'); // assemble many of JS files into one
 var browserify = require('gulp-browserify'); // Mixes libraries (like JQuery) into script code files (needs Ruby to be installed)
 var compass = require('gulp-compass'); // Processes Sass into CSS (needs Ruby to be installed)
+var minifyjs = require('gulp-js-minify'); //To minimize JS files
 var connect = require('gulp-connect'); // Creates HTTP server
+var gulpif = require('gulp-if'); // Allows usind advanced 'if' method
+
 
 
 // Variables declaration
@@ -17,8 +23,6 @@ var htmlSources, coffeeSources, jsSources, sassSources, outputDir, sassStyle;
 
 
 // ENVIRONMENT
-//Switching between development and production modes
-var production_mode = 0;
 
 if(!production_mode){//Running Gulp in development mode
 	gutil.log('<<<<<<< DEVELOPMENT MODE >>>>>>>');
@@ -55,7 +59,7 @@ sassSources = [
 // Gulp tasks
 
 gulp.task('html_track', function(){
-	gulp.src(htmlSources).pipe(connect.reload());
+	gulp.src(htmlSources).pipe(gulp.dest(outputDir)).pipe(connect.reload());
 });
 
 gulp.task('coffee', function(){
@@ -63,7 +67,7 @@ gulp.task('coffee', function(){
 });
 
 gulp.task('js_concat', function(){
-	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(browserify()).pipe(gulp.dest(outputDir + 'js')).pipe(connect.reload());
+	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(browserify()).pipe(gulpif(production_mode, minifyjs())).pipe(gulp.dest(outputDir + 'js')).pipe(connect.reload());
 });
 
 gulp.task('compass', function(){
