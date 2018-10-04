@@ -14,12 +14,14 @@ var minifyjs = require('gulp-js-minify'); //To minimize JS files
 var connect = require('gulp-connect'); // Creates HTTP server
 var gulpif = require('gulp-if'); // Allows usind advanced 'if' method
 var minifyHTML = require('gulp-minify-html'); //Minifies HTML
+var imagemin = require('gulp-imagemin'); // For minifying images (requires gulp imagemin-pngcrush installed)
+var pngcrush = require('imagemin-pngcrush');
 
 
 
 // Variables declaration
 
-var htmlSources, coffeeSources, jsSources, sassSources, outputDir, sassStyle;
+var htmlSources, coffeeSources, jsSources, sassSources, outputDir, sassStyle, imgSources;
 
 
 
@@ -43,6 +45,10 @@ htmlSources = [
 	'builds/development/*.html'
 ];
 
+imgSources = [
+	'builds/development/images/**/*.*'
+];
+
 coffeeSources = [
 	'builds/components/coffee/tagline.coffee'
 ];
@@ -60,23 +66,51 @@ sassSources = [
 // Gulp tasks
 
 gulp.task('html_track', function(){
-	gulp.src(htmlSources).pipe(gulpif(production_mode, minifyHTML())).pipe(gulpif(production_mode, gulp.dest(outputDir))).pipe(connect.reload());
+	gulp.src(htmlSources).
+	pipe(gulpif(production_mode, minifyHTML())).
+	pipe(gulpif(production_mode, gulp.dest(outputDir))).
+	pipe(connect.reload());
+});
+
+
+gulp.task('images', function(){
+	gulp.src(imgSources).
+	pipe(gulpif(production_mode, imagemin({
+		progressive: true,
+		svgoPlugins: [{removeViewBox: false}],
+		use: [pngcrush()]
+	}))).
+	pipe(gulpif(production_mode, gulp.dest('builds/production/images/'))).
+	pipe(connect.reload());
 });
 
 gulp.task('coffee', function(){
-	gulp.src(coffeeSources).pipe(coffee({bare: true}).on('error', gutil.log)).pipe(gulp.dest("builds/components/scripts"));
+	gulp.src(coffeeSources).
+	pipe(coffee({bare: true}).
+	on('error', gutil.log)).
+	pipe(gulp.dest("builds/components/scripts"));
 });
 
 gulp.task('js_concat', function(){
-	gulp.src(jsSources).pipe(concat('script.js')).on('error', gutil.log).pipe(browserify()).pipe(gulpif(production_mode, minifyjs())).pipe(gulp.dest(outputDir + 'js')).pipe(connect.reload());
+	gulp.src(jsSources).
+	pipe(concat('script.js')).
+	on('error', gutil.log).
+	pipe(browserify()).
+	pipe(gulpif(production_mode, minifyjs())).
+	pipe(gulp.dest(outputDir + 'js')).
+	pipe(connect.reload());
 });
 
 gulp.task('compass', function(){
-	gulp.src(sassSources).pipe(compass({
+	gulp.src(sassSources).
+	pipe(compass({
 		sass: 'builds/components/sass',
 		image: outputDir + 'images',
 		style: sassStyle
-	})).on('error', gutil.log).pipe(gulp.dest(outputDir + 'css')).pipe(connect.reload());
+	})).
+	on('error', gutil.log).
+	pipe(gulp.dest(outputDir + 'css')).
+	pipe(connect.reload());
 });
 
 gulp.task('all', ['coffee', 'js_concat', 'compass']);
@@ -87,6 +121,7 @@ gulp.task('watch', function(){
 	gulp.watch(coffeeSources, ['coffee']);
 	gulp.watch(jsSources, ['js_concat']);
 	gulp.watch('builds/components/sass/*.scss', ['compass']);
+	gulp.watch(imgSources, ['images']);
 });
 
 gulp.task('connect', function(){
@@ -96,4 +131,4 @@ gulp.task('connect', function(){
 	});
 });
 
-gulp.task('default', ['html_track', 'coffee', 'js_concat', 'compass', 'connect', 'watch']);
+gulp.task('default', ['html_track', 'coffee', 'js_concat', 'compass', 'connect', 'images', 'watch']);

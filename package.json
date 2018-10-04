@@ -20,11 +20,13 @@
     "gulp-concat": "^2.6.1",
     "gulp-connect": "^5.6.1",
     "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^4.1.0",
     "gulp-js-minify": "0.0.3",
     "gulp-minify": "^3.1.0",
     "gulp-minify-html": "^1.0.6",
     "gulp-uglify": "^3.0.1",
-    "gulp-util": "^3.0.8"
+    "gulp-util": "^3.0.8",
+    "imagemin-pngcrush": "^5.1.0"
   },
   "dependencies": {
     "jquery": "^3.3.1",
